@@ -1,9 +1,11 @@
 package com.yazh.smartspend.service;
+import com.yazh.smartspend.dto.UserRequestDto;
 import com.yazh.smartspend.dto.UserResponseDto;
 import com.yazh.smartspend.entity.User;
 import com.yazh.smartspend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.yazh.smartspend.dto.UserRequestDto;
 import java.util.*;
 
 //business logics reside here
@@ -20,14 +22,14 @@ public class UserService {
       );
   }
 
-public UserResponseDto saveUser(User user) {
+public UserResponseDto saveUser(UserRequestDto userRequestDto) {
+    User user = new User();
+    user.setName(userRequestDto.getName());
+    user.setEmail(userRequestDto.getEmail());
+    user.setPassword(userRequestDto.getPassword());
+    user.setRole(userRequestDto.getRole());
     User savedUser = userRepository.save(user);
-    return new UserResponseDto(
-            savedUser.getId(),
-            savedUser.getName(),
-            savedUser.getEmail(),
-            savedUser.getRole()
-    );
+    return mapToDto(savedUser);
 }
 
    public List<UserResponseDto> getAllUsers(){

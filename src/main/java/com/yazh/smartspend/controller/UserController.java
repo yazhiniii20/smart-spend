@@ -4,6 +4,8 @@ import com.yazh.smartspend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.yazh.smartspend.dto.UserResponseDto;
+import jakarta.validation.Valid;
+import com.yazh.smartspend.dto.UserRequestDto;
 import java.util.*;
 
 @RestController
@@ -13,8 +15,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public UserResponseDto createUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public UserResponseDto createUser( @Valid @RequestBody UserRequestDto userRequestDto) {
+        return userService.saveUser(userRequestDto);
     }
 
     @GetMapping
