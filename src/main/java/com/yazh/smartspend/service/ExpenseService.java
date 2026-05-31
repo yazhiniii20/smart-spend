@@ -6,12 +6,16 @@ import com.yazh.smartspend.entity.Expense;
 import com.yazh.smartspend.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.yazh.smartspend.entity.User;
+import com.yazh.smartspend.repository.UserRepository;
 import java.util.*;
 
 @Service
 public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
+    @Autowired
+    private UserRepository userRepository;
     private ExpenseResponseDto mapToDto(Expense expense) {
         return new ExpenseResponseDto(
                 expense.getId(),
@@ -24,14 +28,15 @@ public class ExpenseService {
     }
 
     public ExpenseResponseDto saveExpense( ExpenseRequestDto expenseRequestDto) {
-
     Expense expense = new Expense();
+    User user = userRepository.findById(expenseRequestDto.getUserId()).orElse(null);
 
     expense.setTitle(expenseRequestDto.getTitle());
     expense.setAmount(expenseRequestDto.getAmount());
     expense.setCategory(expenseRequestDto.getCategory());
     expense.setDate(expenseRequestDto.getDate());
     expense.setNotes(expenseRequestDto.getNotes());
+    expense.setUser(user);
 
     Expense savedExpense =  expenseRepository.save(expense);
 

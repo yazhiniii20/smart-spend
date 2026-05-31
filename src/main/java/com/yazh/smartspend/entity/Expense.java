@@ -3,7 +3,7 @@ package com.yazh.smartspend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import com.yazh.smartspend.entity.User;
 import java.time.LocalDate;
 
 @Entity
@@ -19,4 +19,7 @@ public class Expense {
     private String category;
     private LocalDate date;
     private String notes;
+    @ManyToOne
+    @JoinColumn(name = "user_id")//means - create foreign key column inside expenses table
+    private User user;
 }
