@@ -77,5 +77,14 @@ public class ExpenseService {
  public void deleteExpense(Long id){
     expenseRepository.deleteById(id);
  }
+ 
+ public List<ExpenseResponseDto> getExpensesByUserId(Long userId) {
+   List<Expense> expenses = expenseRepository.findByUserId(userId);
+   List<ExpenseResponseDto> response =   new ArrayList<>();
 
+     for(Expense expense : expenses) {
+         response.add(mapToDto(expense));
+    }
+    return response;
+}
 }
