@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import com.yazh.smartspend.dto.UserResponseDto;
 import jakarta.validation.Valid;
 
+import com.yazh.smartspend.dto.CategoryBreakdownDto;
+import com.yazh.smartspend.dto.CategoryExpenseResponseDto;
 import com.yazh.smartspend.dto.ExpenseResponseDto;
+import com.yazh.smartspend.dto.MonthlyExpenseResponseDto;
+import com.yazh.smartspend.dto.TotalExpenseResponseDto;
 import com.yazh.smartspend.dto.UserRequestDto;
 import java.util.*;
 
@@ -48,5 +52,28 @@ public class UserController {
     @GetMapping("/{userId}/expenses")
     public List<ExpenseResponseDto> getUserExpenses(@PathVariable Long userId) {
         return expenseService.getExpensesByUserId(userId);
+   }
+   
+   @GetMapping("/{userId}/expenses/total")
+   public TotalExpenseResponseDto getTotalExpenses(@PathVariable Long userId) {
+     return expenseService.getTotalExpensesByUserId(userId);
+   }
+
+   @GetMapping("/{userId}/expenses/category/{category}")
+   public CategoryExpenseResponseDto getExpensesByCategory(@PathVariable Long userId,
+   @PathVariable String category) {
+    return expenseService.getTotalExpensesByCategory(userId,category);
+   }
+
+   @GetMapping("/{userId}/expenses/month/{year}/{month}")
+   public MonthlyExpenseResponseDto getMonthlyExpenseSummary(@PathVariable Long userId, @PathVariable Integer year,
+        @PathVariable Integer month) {
+
+     return expenseService.getMonthlyExpenseSummary(userId,year,month);
+   }
+
+   @GetMapping("/{userId}/expenses/category-breakdown")
+   public List<CategoryBreakdownDto> getCategoryBreakdown(@PathVariable Long userId) {
+    return expenseService.getCategoryBreakdown(userId);
    }
 }
