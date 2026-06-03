@@ -5,7 +5,7 @@ import com.yazh.smartspend.entity.User;
 import com.yazh.smartspend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.yazh.smartspend.dto.UserRequestDto;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.*;
 
 //business logics reside here
@@ -13,6 +13,10 @@ import java.util.*;
 public class UserService {
    @Autowired //Dependency Injection
    private UserRepository userRepository;
+
+   @Autowired
+   private PasswordEncoder passwordEncoder;
+
    private UserResponseDto mapToDto(User user) {
       return new UserResponseDto(
               user.getId(),
@@ -26,7 +30,7 @@ public UserResponseDto saveUser(UserRequestDto userRequestDto) {
     User user = new User();
     user.setName(userRequestDto.getName());
     user.setEmail(userRequestDto.getEmail());
-    user.setPassword(userRequestDto.getPassword());
+    user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
     user.setRole(userRequestDto.getRole());
     User savedUser = userRepository.save(user);
     return mapToDto(savedUser);
