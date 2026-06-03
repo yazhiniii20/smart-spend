@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 
 import com.yazh.smartspend.dto.CategoryBreakdownDto;
 import com.yazh.smartspend.dto.CategoryExpenseResponseDto;
+import com.yazh.smartspend.dto.DashboardResponseDto;
 import com.yazh.smartspend.dto.ExpenseResponseDto;
 import com.yazh.smartspend.dto.MonthlyExpenseResponseDto;
 import com.yazh.smartspend.dto.TotalExpenseResponseDto;
@@ -75,5 +76,10 @@ public class UserController {
    @GetMapping("/{userId}/expenses/category-breakdown")
    public List<CategoryBreakdownDto> getCategoryBreakdown(@PathVariable Long userId) {
     return expenseService.getCategoryBreakdown(userId);
+   }
+   
+    @GetMapping("/{userId}/dashboard")
+    public DashboardResponseDto getDashboard(@PathVariable Long userId) {
+       return expenseService.getDashboard(userId);
    }
 }

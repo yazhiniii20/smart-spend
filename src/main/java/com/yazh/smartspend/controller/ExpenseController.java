@@ -1,5 +1,6 @@
 package com.yazh.smartspend.controller;
 
+import com.yazh.smartspend.dto.DashboardResponseDto;
 import com.yazh.smartspend.dto.ExpenseRequestDto;
 import com.yazh.smartspend.dto.ExpenseResponseDto;
 import com.yazh.smartspend.service.ExpenseService;

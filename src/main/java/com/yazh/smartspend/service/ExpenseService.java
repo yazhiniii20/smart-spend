@@ -2,6 +2,7 @@ package com.yazh.smartspend.service;
 
 import com.yazh.smartspend.dto.CategoryBreakdownDto;
 import com.yazh.smartspend.dto.CategoryExpenseResponseDto;
+import com.yazh.smartspend.dto.DashboardResponseDto;
 import com.yazh.smartspend.dto.ExpenseRequestDto;
 import com.yazh.smartspend.dto.ExpenseResponseDto;
 import com.yazh.smartspend.dto.MonthlyExpenseResponseDto;
@@ -93,15 +94,13 @@ public class ExpenseService {
     return response;
 }
  public TotalExpenseResponseDto getTotalExpensesByUserId(Long userId) {
-
     List<Expense> expenses = expenseRepository.findByUserId(userId);
-
     double total = expenses.stream()
             .mapToDouble(Expense::getAmount)
             .sum();
-
     return new TotalExpenseResponseDto(userId,total);
   }
+
   public CategoryExpenseResponseDto getTotalExpensesByCategory(Long userId,String category){
     List<Expense> expenses = expenseRepository.findByUserIdAndCategory(userId,category);
     double total = expenses.stream()
@@ -109,33 +108,51 @@ public class ExpenseService {
     .sum();
     return new CategoryExpenseResponseDto(userId,category,total);
   }
+
   public MonthlyExpenseResponseDto getMonthlyExpenseSummary(Long userId, Integer year, Integer month) {
-
     List<Expense> expenses =  expenseRepository.findByUserId(userId);
-
     double total = expenses.stream()
     .filter(expense ->  expense.getDate().getYear() == year && expense.getDate().getMonthValue() == month)
     .mapToDouble(Expense::getAmount)
     .sum();
-
     return new MonthlyExpenseResponseDto(userId,year,month,total);
   }
 
   public List<CategoryBreakdownDto> getCategoryBreakdown(Long userId) {
-
     List<Expense> expenses = expenseRepository.findByUserId(userId);
-
     Map<String, Double> categoryTotals = expenses.stream().collect(
                             Collectors.groupingBy(
                                     Expense::getCategory,
                                     Collectors.summingDouble(Expense::getAmount)
                             )
                     );
-
     List<CategoryBreakdownDto> response = new ArrayList<>();
-
     categoryTotals.forEach((category, total) -> response.add(new CategoryBreakdownDto(category,total)));
-
     return response;
    }
+
+   public Integer getExpenseCount(Long userId) {
+    return expenseRepository
+            .findByUserId(userId)
+            .size();
+   }
+
+   public String getTopCategory(Long userId) {
+    List<Expense> expenses =   expenseRepository.findByUserId(userId);
+    return expenses.stream().collect(
+                    Collectors.groupingBy(Expense::getCategory,
+                    Collectors.summingDouble(Expense::getAmount)))
+            .entrySet()
+            .stream()
+            .max(Map.Entry.comparingByValue())
+            .map(Map.Entry::getKey)
+            .orElse("No Expenses");
+  }
+
+  public DashboardResponseDto getDashboard(Long userId) {
+    double total =  getTotalExpensesByUserId(userId).getTotalSpent();
+    int count = getExpenseCount(userId);
+    String topCategory =  getTopCategory(userId);
+    return new DashboardResponseDto(userId,total,count,topCategory);
+  }
 }
