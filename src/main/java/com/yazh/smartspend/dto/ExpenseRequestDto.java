@@ -25,7 +25,4 @@ public class ExpenseRequestDto {
     private LocalDate date;
 
     private String notes;
-
-    @NotNull(message = "User id is required")
-    private Long userId;
 }

@@ -2,9 +2,12 @@ package com.yazh.smartspend.controller;
 
 import com.yazh.smartspend.dto.ExpenseRequestDto;
 import com.yazh.smartspend.dto.ExpenseResponseDto;
+import com.yazh.smartspend.entity.User;
+import com.yazh.smartspend.service.AuthService;
 import com.yazh.smartspend.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -13,10 +16,15 @@ import java.util.List;
 public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
-
+    
+    @Autowired
+    private AuthService authService;
+    
     @PostMapping
-    public ExpenseResponseDto createExpense(@Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
-        return expenseService.saveExpense(expenseRequestDto);
+    public ExpenseResponseDto createExpense(@Valid @RequestBody ExpenseRequestDto expenseRequestDto,Authentication authentication) {
+        String email = authentication.getName();
+        User user = authService.getAuthenticatedUser(email);
+        return expenseService.saveExpense(expenseRequestDto,user);
     }
 
     @GetMapping
@@ -38,4 +46,11 @@ public class ExpenseController {
     public void deleteExpense(@PathVariable Long id){
         expenseService.deleteExpense(id);
     }
+
+    @GetMapping("/my")
+    public List<ExpenseResponseDto> getMyExpenses(Authentication authentication) {
+     String email = authentication.getName();
+     User user = authService.getAuthenticatedUser(email);
+     return expenseService.getMyExpenses(user.getId());
+  }
 }

@@ -33,15 +33,15 @@ public class ExpenseService {
         );
     }
 
-    public ExpenseResponseDto saveExpense( ExpenseRequestDto expenseRequestDto) {
+    public ExpenseResponseDto saveExpense( ExpenseRequestDto expenseRequestDto,User user) {
     Expense expense = new Expense();
-    User user = userRepository.findById(expenseRequestDto.getUserId()).orElse(null);
 
     expense.setTitle(expenseRequestDto.getTitle());
     expense.setAmount(expenseRequestDto.getAmount());
     expense.setCategory(expenseRequestDto.getCategory());
     expense.setDate(expenseRequestDto.getDate());
     expense.setNotes(expenseRequestDto.getNotes());
+
     expense.setUser(user);
 
     Expense savedExpense =  expenseRepository.save(expense);
@@ -154,5 +154,14 @@ public class ExpenseService {
     int count = getExpenseCount(userId);
     String topCategory =  getTopCategory(userId);
     return new DashboardResponseDto(userId,total,count,topCategory);
+  }
+  
+  public List<ExpenseResponseDto> getMyExpenses(Long userId) {
+      List<Expense> expenses = expenseRepository.findByUserId(userId);
+      List<ExpenseResponseDto> response =  new ArrayList<>();
+      for(Expense expense : expenses) {
+          response.add(mapToDto(expense));
+      }
+      return response;
   }
 }
