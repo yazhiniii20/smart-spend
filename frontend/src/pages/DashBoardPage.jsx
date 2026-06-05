@@ -5,16 +5,12 @@ function DashboardPage() {
     const[user,setUser] = useState(null);
     const[dashboard,setDashboard] = useState(null);
     const[expenses,setExpenses] = useState([]);
-   
-    useEffect(() => {      
-    const fetchUser = async () => {
-      try{
-         const response = await api.get("/auth/me");
-         setUser(response.data);
-      }catch(error){
-       console.log(error);
-      }
-   };
+    const [title, setTitle] = useState("");
+    const [amount, setAmount] = useState("");
+    const [category, setCategory] = useState("");
+    const [date, setDate] = useState("");
+    const [notes, setNotes] = useState("");
+    const [editingExpenseId, setEditingExpenseId] = useState(null);
        
     const fetchDashboard = async() => {
       try{
@@ -23,7 +19,7 @@ function DashboardPage() {
       }catch(error){
        console.log(error);
       }
-   };
+    };
 
     const fetchExpenses = async () => {
        try {
@@ -33,10 +29,86 @@ function DashboardPage() {
         console.log(error);
       }
     };
+    useEffect(() => {      
+    const fetchUser = async () => {
+      try{
+         const response = await api.get("/auth/me");
+         setUser(response.data);
+      }catch(error){
+       console.log(error);
+      }
+   };
        fetchUser();
        fetchDashboard();
        fetchExpenses();
     },[]);
+    
+    const handleAddExpense = async () => {
+      try {  
+          await api.post("/expenses", {
+              title,
+              amount,
+              category,
+              date,
+              notes
+          });
+  
+          fetchExpenses();
+          fetchDashboard();
+  
+          setTitle("");
+          setAmount("");
+          setCategory("");
+          setDate("");
+          setNotes("");  
+      } catch(error) {  
+          console.log(error);  
+      }
+    };
+
+    const handleDeleteExpense = async (expenseId) => {
+      try {  
+          await api.delete(`/expenses/${expenseId}`);  
+          fetchExpenses();
+          fetchDashboard();  
+      } catch(error) {  
+          console.log(error);  
+        }
+     };
+
+     const handleEditExpense = (expense) => {
+      setEditingExpenseId(expense.id);  
+      setTitle(expense.title);
+      setAmount(expense.amount);
+      setCategory(expense.category);
+      setDate(expense.date);
+      setNotes(expense.notes);
+    };
+
+    const handleUpdateExpense = async () => {
+      try {  
+          await api.put(`/expenses/${editingExpenseId}`,
+              {
+                  title,
+                  amount,
+                  category,
+                  date,
+                  notes
+              }
+          );
+
+          fetchExpenses();
+          fetchDashboard();  
+          setEditingExpenseId(null);  
+          setTitle("");
+          setAmount("");
+          setCategory("");
+          setDate("");
+          setNotes("");  
+      } catch(error) {  
+          console.log(error);  
+      }
+  };
 
     return(
       <div>
@@ -59,8 +131,32 @@ function DashboardPage() {
               <h3>
               Top Category: {dashboard.topCategory}
               </h3>
+              <hr/>
             </div>
           )}
+          <div>
+          <h2>Add Expense</h2>
+            <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
+          <br/><br/>
+             <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)}/>
+          <br/><br/>
+             <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)}/>
+          <br/><br/>
+              <input type="date" value={date} onChange={(e) => setDate(e.target.value)}/>
+          <br/><br/>
+              <input type="text"  placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)}/>
+           <br/><br/>
+              <button onClick={editingExpenseId ? handleUpdateExpense : handleAddExpense}>
+              {editingExpenseId ? "Update Expense" : "Add Expense"} </button>
+              {editingExpenseId && (<button onClick={() => {
+                  setEditingExpenseId(null);
+                  setTitle("");
+                  setAmount("");
+                  setCategory("");
+                  setDate("");
+                  setNotes(""); }}> Cancel </button> )}
+        <hr/>
+        </div>
           <div>
             <h2> My Expenses </h2>
             {expenses.map((expense) => (
@@ -68,6 +164,8 @@ function DashboardPage() {
              <h4>{expense.title}</h4>
              <p>₹{expense.amount}</p>
              <p>{expense.category}</p>
+             <button onClick={() => handleEditExpense(expense)}>Edit </button>
+             <button onClick={() => handleDeleteExpense(expense.id)}> Delete </button>
                <hr/>
              </div>
         ))}
