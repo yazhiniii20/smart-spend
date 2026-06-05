@@ -13,7 +13,8 @@ function LoginPage() {
         email,
         password
        });
-       console.log(response.data);
+       localStorage.setItem("token",response.data.token);      
+       navigate("/dashboard");
      }catch(error){
         console.log(error);
      }
