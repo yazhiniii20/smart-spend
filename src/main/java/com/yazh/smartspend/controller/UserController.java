@@ -3,10 +3,11 @@ import com.yazh.smartspend.entity.User;
 import com.yazh.smartspend.service.ExpenseService;
 import com.yazh.smartspend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.yazh.smartspend.dto.UserResponseDto;
 import jakarta.validation.Valid;
-
+import com.yazh.smartspend.service.AuthService;
 import com.yazh.smartspend.dto.CategoryBreakdownDto;
 import com.yazh.smartspend.dto.CategoryExpenseResponseDto;
 import com.yazh.smartspend.dto.DashboardResponseDto;
@@ -24,6 +25,9 @@ public class UserController {
 
     @Autowired
     private ExpenseService expenseService;
+
+    @Autowired
+    private AuthService authService;
 
     @PostMapping
     public UserResponseDto createUser( @Valid @RequestBody UserRequestDto userRequestDto) {
@@ -71,11 +75,6 @@ public class UserController {
         @PathVariable Integer month) {
 
      return expenseService.getMonthlyExpenseSummary(userId,year,month);
-   }
-
-   @GetMapping("/{userId}/expenses/category-breakdown")
-   public List<CategoryBreakdownDto> getCategoryBreakdown(@PathVariable Long userId) {
-    return expenseService.getCategoryBreakdown(userId);
    }
    
     @GetMapping("/{userId}/dashboard")

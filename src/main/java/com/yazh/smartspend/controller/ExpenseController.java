@@ -1,5 +1,6 @@
 package com.yazh.smartspend.controller;
 
+import com.yazh.smartspend.dto.CategoryBreakdownDto;
 import com.yazh.smartspend.dto.ExpenseRequestDto;
 import com.yazh.smartspend.dto.ExpenseResponseDto;
 import com.yazh.smartspend.entity.User;
@@ -53,4 +54,11 @@ public class ExpenseController {
      User user = authService.getAuthenticatedUser(email);
      return expenseService.getMyExpenses(user.getId());
   }
+   
+   @GetMapping("/category-breakdown")
+   public List<CategoryBreakdownDto> getCategoryBreakdown(Authentication authentication) {
+    String email = authentication.getName();
+    User user = authService.getAuthenticatedUser(email);
+    return expenseService.getCategoryBreakdown(user.getId());
+   }
 }

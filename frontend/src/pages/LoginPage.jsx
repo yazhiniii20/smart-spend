@@ -30,6 +30,7 @@ function LoginPage() {
         <br/>
         <br/>
         <button onClick = {handleLogin}>Login</button>
+        <p onClick={() => navigate("/register")}> Create Account </p>
      </div>
    );    
   }

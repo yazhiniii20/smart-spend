@@ -1,5 +1,7 @@
 import {useState,useEffect} from 'react';
 import api from '../api/axios';
+import CategoryPieChart from "../components/CategoryPieChart";
+import { useNavigate } from "react-router-dom";
 
 function DashboardPage() {
     const[user,setUser] = useState(null);
@@ -11,7 +13,9 @@ function DashboardPage() {
     const [date, setDate] = useState("");
     const [notes, setNotes] = useState("");
     const [editingExpenseId, setEditingExpenseId] = useState(null);
-       
+    const [categoryData, setCategoryData] = useState([]);
+    const navigate = useNavigate();
+
     const fetchDashboard = async() => {
       try{
        const response = await api.get("/dashboard");
@@ -40,6 +44,7 @@ function DashboardPage() {
    };
        fetchUser();
        fetchDashboard();
+       fetchCategoryBreakdown();
        fetchExpenses();
     },[]);
     
@@ -55,7 +60,7 @@ function DashboardPage() {
   
           fetchExpenses();
           fetchDashboard();
-  
+          fetchCategoryBreakdown();
           setTitle("");
           setAmount("");
           setCategory("");
@@ -70,9 +75,19 @@ function DashboardPage() {
       try {  
           await api.delete(`/expenses/${expenseId}`);  
           fetchExpenses();
-          fetchDashboard();  
+          fetchDashboard(); 
+          fetchCategoryBreakdown(); 
       } catch(error) {  
           console.log(error);  
+        }
+     };
+
+     const fetchCategoryBreakdown = async () => {
+        try {
+            const response = await api.get("/expenses/category-breakdown");
+            setCategoryData(response.data);
+        } catch(error) {
+            console.log(error);
         }
      };
 
@@ -98,7 +113,8 @@ function DashboardPage() {
           );
 
           fetchExpenses();
-          fetchDashboard();  
+          fetchDashboard();
+          fetchCategoryBreakdown();  
           setEditingExpenseId(null);  
           setTitle("");
           setAmount("");
@@ -110,8 +126,16 @@ function DashboardPage() {
       }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
     return(
       <div>
+          <div>
+          <button onClick={handleLogout}> Logout </button>
+          </div>
           <div>
           <h1> DashBoard </h1>
           {user && (
@@ -134,6 +158,10 @@ function DashboardPage() {
               <hr/>
             </div>
           )}
+          <div>
+          <h2>Expense Breakdown</h2>
+            <CategoryPieChart data={categoryData}/>
+          </div>
           <div>
           <h2>Add Expense</h2>
             <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
