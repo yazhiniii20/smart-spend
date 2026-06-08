@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashBoardPage from "./pages/DashBoardPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import "./App.css";
 
 function App() {
   return (

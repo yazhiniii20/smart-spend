@@ -1,6 +1,13 @@
-function NavBar(){
-    return(
-     <h2> SmartSpend Navbar</h2>
+function Navbar({ onLogout }) {
+    return (
+      <nav className="navbar">
+        <h2>SmartSpend</h2>
+  
+        <button onClick={onLogout}>
+          Logout
+        </button>
+      </nav>
     );
-}
-export default NavBar;
+  }
+  
+export default Navbar;

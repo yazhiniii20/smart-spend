@@ -2,6 +2,8 @@ import {useState,useEffect} from 'react';
 import api from '../api/axios';
 import CategoryPieChart from "../components/CategoryPieChart";
 import { useNavigate } from "react-router-dom";
+import "../styles/Dashboard.css";
+import Navbar from "../components/NavBar";
 
 function DashboardPage() {
     const[user,setUser] = useState(null);
@@ -130,40 +132,51 @@ function DashboardPage() {
     localStorage.removeItem("token");
     navigate("/");
   };
+  if (!user || !dashboard) {
+    return <h2>Loading...</h2>;
+}
 
     return(
-      <div>
+      <div className = "dashboard-container">        
           <div>
-          <button onClick={handleLogout}> Logout </button>
+          <Navbar onLogout={handleLogout}/>
           </div>
           <div>
           <h1> DashBoard </h1>
+          <p className="dashboard-subtitle"> Track your spending and financial activity </p>
+          <div className="welcome-section">
           {user && (
-            <h2>
-              Welcome {user.name}
-            </h2>
+            <h2>  Welcome {user.name}👋 </h2>
           )}
           </div>
+          </div>
           {dashboard && (
-              <div>
+              <div className="stats-container">
+              <div className="card">
               <h3>
                 Total Spent : ₹{dashboard.totalSpent}
               </h3>
+              </div>
+              <div className="card">
               <h3>
                 Expense Count : {dashboard.expenseCount}
               </h3>
+              </div>
+              <div className="card">
               <h3>
               Top Category: {dashboard.topCategory}
               </h3>
+              </div>
               <hr/>
             </div>
           )}
-          <div>
+          <div className="content-section">
+          <div className="chart-card">
           <h2>Expense Breakdown</h2>
             <CategoryPieChart data={categoryData}/>
           </div>
-          <div>
-          <h2>Add Expense</h2>
+          <div className="form-card">
+          <h2>{editingExpenseId ? "Update Expense" : "Add Expense"}</h2>
             <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
           <br/><br/>
              <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)}/>
@@ -185,21 +198,40 @@ function DashboardPage() {
                   setNotes(""); }}> Cancel </button> )}
         <hr/>
         </div>
-          <div>
+        </div>
+        {expenses.length === 0 ? (
+         <div className="empty-state"> No expenses found.
+                                       Add your first expense 🚀
+          </div> ) : ( 
+          <div className="expense-table-container">
             <h2> My Expenses </h2>
-            {expenses.map((expense) => (
-             <div key={expense.id}>
-             <h4>{expense.title}</h4>
-             <p>₹{expense.amount}</p>
-             <p>{expense.category}</p>
-             <button onClick={() => handleEditExpense(expense)}>Edit </button>
-             <button onClick={() => handleDeleteExpense(expense.id)}> Delete </button>
-               <hr/>
-             </div>
-        ))}
-          </div>
-      </div>
-    );
-  }
-  
+            <table className="expense-table">
+                <thead>
+                 <tr>
+                  <th>Title</th>
+                  <th>Amount</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+           <tbody>
+               {expenses.map((expense) => (
+                  <tr key={expense.id}>
+                  <td>{expense.title}</td>
+                  <td>₹{expense.amount}</td>
+                  <td>{expense.category}</td>
+                  <td>{expense.date}</td>
+                  <td> <button className="edit-btn" onClick={() => handleEditExpense(expense)}> Edit </button>
+                  <button className="delete-btn" onClick={() => handleDeleteExpense(expense.id)}> Delete </button>
+                 </td>
+           </tr>
+         ))}
+          </tbody>
+             </table>
+                 </div>
+            )}
+                    </div>
+              );
+            } 
 export default DashboardPage;

@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import api from "../api/axios";
+import "../styles/Login.css";
 
 function LoginPage() {
    const [email,setEmail] = useState("");
@@ -21,8 +22,10 @@ function LoginPage() {
    };
 
    return(
-     <div>
-        <h1> Login Page </h1>
+     <div className="login-container">
+        <div className="login-card">
+        <h1>SmartSpend</h1>
+        <p className="subtitle"> Track your expenses and manage your finances</p>
         <input type="email" value = {email} placeholder = "Enter email" onChange={(e) => setEmail(e.target.value)}/>
         <br/>
         <br/>
@@ -30,7 +33,8 @@ function LoginPage() {
         <br/>
         <br/>
         <button onClick = {handleLogin}>Login</button>
-        <p onClick={() => navigate("/register")}> Create Account </p>
+        <p className="auth-link" onClick={() => navigate("/register")}> Create Account </p>
+        </div>
      </div>
    );    
   }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import "../styles/Register.css"
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -28,7 +29,8 @@ function RegisterPage() {
     };
 
     return (
-        <div>
+        <div className="register-container">
+            <div className="register-card">
             <h1>Register</h1>
             <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}/>
             <br/><br/>
@@ -37,6 +39,7 @@ function RegisterPage() {
             <input  type="password" placeholder="Password" value={password}  onChange={(e) => setPassword(e.target.value)}/>
             <br/><br/>
             <button onClick={handleRegister}> Register </button>
+            </div>
         </div>
     );
 }
