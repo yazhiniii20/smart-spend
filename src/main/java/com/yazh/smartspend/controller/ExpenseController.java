@@ -8,8 +8,13 @@ import com.yazh.smartspend.service.AuthService;
 import com.yazh.smartspend.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import java.util.List;
 
 @RestController
@@ -60,5 +65,14 @@ public class ExpenseController {
     String email = authentication.getName();
     User user = authService.getAuthenticatedUser(email);
     return expenseService.getCategoryBreakdown(user.getId());
+   }
+   @GetMapping("/export")
+   public ResponseEntity<byte[]> exportExpenses(Authentication authentication) {
+    String email = authentication.getName();
+    User user = authService.getAuthenticatedUser(email);
+    byte[] csvData = expenseService.exportExpensesToCsv(user.getId());
+    return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=expenses.csv")
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(csvData);
    }
 }

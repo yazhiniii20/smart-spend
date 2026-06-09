@@ -164,4 +164,22 @@ public class ExpenseService {
       }
       return response;
   }
+  public byte[] exportExpensesToCsv(Long userId) {
+    List<Expense> expenses =  expenseRepository.findByUserId(userId);
+    StringBuilder csv = new StringBuilder();
+    csv.append("Title,Amount,Category,Date,Notes\n");
+    for (Expense expense : expenses) {
+        csv.append(expense.getTitle())
+                .append(",")
+                .append(expense.getAmount())
+                .append(",")
+                .append(expense.getCategory())
+                .append(",")
+                .append(expense.getDate())
+                .append(",")
+                .append(expense.getNotes())
+                .append("\n");
+        }
+    return csv.toString().getBytes();
+ }
 }

@@ -182,3 +182,10 @@ button{
     color:#666;
     margin-bottom:25px;
 }
+.expense-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:25px;
+    margin-bottom:15px;
+}

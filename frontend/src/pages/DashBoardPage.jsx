@@ -134,7 +134,25 @@ function DashboardPage() {
   };
   if (!user || !dashboard) {
     return <h2>Loading...</h2>;
-}
+  }
+
+  const handleExportCsv = async () => {
+    try {
+        const response = await api.get("/expenses/export",{responseType: "blob"});
+        const url =  window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+            "download",
+            "expenses.csv"
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    } catch(error) {
+        console.log(error);
+    }
+ };
 
     return(
       <div className = "dashboard-container">        
@@ -205,6 +223,7 @@ function DashboardPage() {
           </div> ) : ( 
           <div className="expense-table-container">
             <h2> My Expenses </h2>
+            <button onClick={handleExportCsv}>Export CSV</button>
             <table className="expense-table">
                 <thead>
                  <tr>
