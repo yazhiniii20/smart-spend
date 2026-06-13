@@ -263,6 +263,14 @@ Through this project I gained hands-on experience with:
 
 ---
 
+## Live Demo
+
+Frontend: https://smart-spend-frontend-eight.vercel.app/
+
+Backend API: https://smart-spend-wwvn.onrender.com
+
+---
+
 ## 🔮 Future Enhancements
 
 * Expense Budgeting
