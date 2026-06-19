@@ -23,13 +23,19 @@ public class AuthService {
     private JwtService jwtService;
 
     public LoginResponseDto login(LoginRequestDto request) {
+        System.out.println("LOGIN ATTEMPT: " + request.getEmail());
         User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        System.out.println("USER FOUND: " + (user != null));
+        if(user != null){
+            System.out.println("DB HASH: " + user.getPassword());
+        }
         if (user == null) {
-            return new LoginResponseDto("Invalid email or password");
+            throw new RuntimeException("Invalid email or password");
         }
         boolean matches =  passwordEncoder.matches(request.getPassword(), user.getPassword());
+        System.out.println("PASSWORD MATCHES: " + matches);
         if (!matches) {
-            return new LoginResponseDto( "Invalid email or password");
+            throw new RuntimeException("Invalid email or password");
         }
         String token =  jwtService.generateToken(user.getEmail());
         return new LoginResponseDto(token);

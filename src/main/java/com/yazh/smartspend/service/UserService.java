@@ -27,6 +27,9 @@ public class UserService {
   }
 
 public UserResponseDto saveUser(UserRequestDto userRequestDto) {
+    if(userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
+      throw new RuntimeException("Email already exists");
+    }
     User user = new User();
     user.setName(userRequestDto.getName());
     user.setEmail(userRequestDto.getEmail());
