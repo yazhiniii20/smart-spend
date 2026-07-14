@@ -1,0 +1,7 @@
+.logo{
+    width:90px; 
+}
+.navTitle{
+    display : flex;
+    gap : 20px;
+}

@@ -11,7 +11,7 @@
 
 .register-card{
 
-    width:400px;
+    width:450px;
 
     background:white;
 
@@ -57,4 +57,21 @@
     border-radius:8px;
 
     cursor:pointer;
+}
+.logo{
+    width:120px;
+    display: block;  
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 30%;
+}
+.auth-p{
+    text-align: center;
+}
+.auth-link{
+    text-align:center;
+    margin-top:20px;
+    cursor:pointer;
+    color:#2563eb;
+    font-weight:500;
 }

@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import api from "../api/axios";
+import logo from "../images/logo.png";
 import "../styles/Login.css";
 
 function LoginPage() {
@@ -9,23 +10,34 @@ function LoginPage() {
    const navigate = useNavigate();
    
    const handleLogin = async() => {
-     try{
-       const response = await api.post("/auth/login",{
-        email,
-        password
-       });
-       localStorage.setItem("token",response.data.token);      
-       navigate("/dashboard");
+    try{
+      const response = await api.post("/auth/login",{
+          email,
+          password
+      });  
+      if(!response.data.token){
+          alert("Login failed");
+          return;
+      }  
+      localStorage.setItem("token",response.data.token);
+      navigate("/dashboard");
+
      }catch(error){
-        console.log(error);
+  
+      if(error.response){
+          alert(error.response.data.message || "Invalid email or password");
+      }else{
+          alert("Server unavailable");
+      }
      }
    };
 
    return(
      <div className="login-container">
         <div className="login-card">
+        <img src = {logo} alt="logo" className="logo"/>
         <h1>SmartSpend</h1>
-        <p className="subtitle"> Track your expenses and manage your finances</p>
+        <p className="subtitle"> Your personal finance companion: Simple, secure and smart.</p>
         <input type="email" value = {email} placeholder = "Enter email" onChange={(e) => setEmail(e.target.value)}/>
         <br/>
         <br/>

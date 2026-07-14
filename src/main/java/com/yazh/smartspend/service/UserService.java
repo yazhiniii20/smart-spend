@@ -6,6 +6,8 @@ import com.yazh.smartspend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 //business logics reside here
@@ -28,7 +30,7 @@ public class UserService {
 
 public UserResponseDto saveUser(UserRequestDto userRequestDto) {
     if(userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
-      throw new RuntimeException("Email already exists");
+      throw new ResponseStatusException(HttpStatus.CONFLICT,"Email already exists");
     }
     User user = new User();
     user.setName(userRequestDto.getName());
@@ -61,7 +63,7 @@ public UserResponseDto saveUser(UserRequestDto userRequestDto) {
       if(existingUser != null){
          existingUser.setEmail(updatedUser.getEmail());
          existingUser.setName(updatedUser.getName());
-         existingUser.setPassword(updatedUser.getPassword());
+         existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
          existingUser.setRole(updatedUser.getRole());
          User savedUser = userRepository.save(existingUser);
          return mapToDto(savedUser);

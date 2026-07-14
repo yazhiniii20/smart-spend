@@ -13,6 +13,10 @@ public class UserRequestDto {
 
     @Email(message = "Invalid Email format")
     @NotBlank(message = "Email cannot be empty")
+    @jakarta.validation.constraints.Pattern(
+        regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+        message = "Please enter a valid email address"
+    )
     private String email;
 
     @Size(min = 4,message = "Password must be atleast 4 characters")

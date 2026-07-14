@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import logo from "../images/logo.png";
 import "../styles/Register.css"
 
 function RegisterPage() {
@@ -13,25 +14,32 @@ function RegisterPage() {
     const handleRegister =  async () => {
         try {
             await api.post("/auth/register", {
-                    name,
-                    email,
-                    password,
-                    role
-                }
-            );
-
+                name,
+                email,
+                password,
+                role
+            });
+            setRole(role);
             alert("Registration Successful");
             navigate("/");
-
-        } catch(error) {
-            console.log(error);
+        
+        } catch (error) {        
+            if (error.response) {
+                alert(
+                    Object.values(error.response.data).join("\n")
+                );
+            } else {
+                alert("Server error");
+            }
         }
     };
 
     return (
         <div className="register-container">
             <div className="register-card">
+            <img src = {logo} alt="logo" className="logo"/>
             <h1>Register</h1>
+            <p className="subtitle"> Smart spending starts with a single step. Register to begin !</p>
             <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}/>
             <br/><br/>
             <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
@@ -39,6 +47,8 @@ function RegisterPage() {
             <input  type="password" placeholder="Password" value={password}  onChange={(e) => setPassword(e.target.value)}/>
             <br/><br/>
             <button onClick={handleRegister}> Register </button>
+            <p className="auth-p"> Already have an account?</p>
+            <p className="auth-link" onClick={() => navigate("/")}> Login </p>
             </div>
         </div>
     );

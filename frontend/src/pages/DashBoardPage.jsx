@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css";
 import Navbar from "../components/NavBar";
 
+
 function DashboardPage() {
     const[user,setUser] = useState(null);
     const[dashboard,setDashboard] = useState(null);
@@ -69,7 +70,13 @@ function DashboardPage() {
           setDate("");
           setNotes("");  
       } catch(error) {  
-          console.log(error);  
+        if(error.response){
+          alert(
+              Object.values(error.response.data).join("\n")
+          );
+       }else{
+          alert("Something went wrong.");
+      } 
       }
     };
 
@@ -161,7 +168,7 @@ function DashboardPage() {
           </div>
           <div>
           <h1> DashBoard </h1>
-          <p className="dashboard-subtitle"> Track your spending and financial activity </p>
+          <p className="dashboard-subtitle"> Monitor your monthly trends and watch your financial health grow !</p>
           <div className="welcome-section">
           {user && (
             <h2>  Welcome {user.name}👋 </h2>
@@ -230,6 +237,7 @@ function DashboardPage() {
                   <th>Title</th>
                   <th>Amount</th>
                   <th>Category</th>
+                  <th>Notes</th>
                   <th>Date</th>
                   <th>Actions</th>
                 </tr>
@@ -240,6 +248,7 @@ function DashboardPage() {
                   <td>{expense.title}</td>
                   <td>₹{expense.amount}</td>
                   <td>{expense.category}</td>
+                  <td>{expense.notes}</td>
                   <td>{expense.date}</td>
                   <td> <button className="edit-btn" onClick={() => handleEditExpense(expense)}> Edit </button>
                   <button className="delete-btn" onClick={() => handleDeleteExpense(expense.id)}> Delete </button>
